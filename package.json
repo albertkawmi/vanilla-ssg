@@ -1,0 +1,22 @@
+{
+  "name": "vanilla-ssg",
+  "version": "0.0.0",
+  "description": "Build simple static sites using JavaScript components.",
+  "main": "build.js",
+  "repository": "https://albertkawmi@bitbucket.org/albertkawmi/vanilla-ssg.git",
+  "author": "Albert Kawmi",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "node ./build.js",
+    "dev": "serve ./dist"
+  },
+  "dependencies": {
+    "deepmerge": "^2.1.0",
+    "html-minifier": "^3.5.15"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "serve": "^6.5.6"
+  }
+}
