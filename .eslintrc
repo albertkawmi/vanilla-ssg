@@ -10,6 +10,7 @@
     "experimentalObjectRestSpread": true
   },
   "extends": "eslint:recommended",
+  "parser": "babel-eslint",
   "rules": {
     "no-undef": "error",
     "no-unused-vars": "error",
