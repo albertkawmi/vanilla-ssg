@@ -23,12 +23,18 @@ async function renderPages() {
   // Render page HTML files
   const allPages = Object.entries(config.pages)
     .map(async ([pagePath, pageConfig]) => {
-      const page = renderPage(pageConfig)
+      const page = await renderPage(pageConfig)
       const renderedPage = (environment === 'production')
         ? minify(page, config.minify)
         : page
 
-      return await writeFileToPath(`${distDir}/${pagePath}`, renderedPage)
+      const trimmedPath = pagePath.replace(/^\/|\/$/g, '')
+      const [end] = trimmedPath.split('/').reverse()
+      const isFile = /\.[a-zA-Z0-9]+$/.test(end)
+
+      const writePath = isFile ? trimmedPath : `${trimmedPath}/index.html`
+
+      return await writeFileToPath(`${distDir}/${writePath}`, renderedPage)
     })
 
   await Promise.all(allPages)

@@ -12,10 +12,12 @@
     "dev": "serve ./dist"
   },
   "dependencies": {
+    "autoprefixer": "^8.4.1",
     "deepmerge": "^2.1.0",
     "html-minifier": "^3.5.15",
     "mkdirp-promise": "^5.0.1",
     "ncp": "^2.0.0",
+    "postcss": "^6.0.22",
     "rmfr": "^2.0.0"
   },
   "devDependencies": {

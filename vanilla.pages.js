@@ -12,7 +12,7 @@ module.exports = {
       `
   },
 
-  'index.html': {
+  '/': {
     title: 'Hello',
     cssFiles: ['styles/exclaim.css'],
     body: 'pages/index',
@@ -22,7 +22,7 @@ module.exports = {
       `
   },
 
-  'about.html': {
+  '/about': {
     title: 'About',
     scriptFiles: [{ path: 'js/utils.js', inline: false }],
     body: 'pages/about',
