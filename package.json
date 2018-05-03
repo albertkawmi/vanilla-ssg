@@ -2,7 +2,7 @@
   "name": "vanilla-ssg",
   "version": "0.0.0",
   "description": "Build simple static sites using JavaScript components.",
-  "main": "build.js",
+  "main": "src/index.js",
   "repository": "https://albertkawmi@bitbucket.org/albertkawmi/vanilla-ssg.git",
   "author": "Albert Kawmi",
   "license": "MIT",
