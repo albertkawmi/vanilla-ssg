@@ -1,11 +1,11 @@
 # TODO
 
+* switch to single config file
+* pass component directly in config (instead of path)
 * Images pipeline - responsive images? LazySizes?
-* livereload https://www.npmjs.com/package/livereload ?
-* handle paths properly e.g. allow starting with ./
-* TODO: add inline config option for CSS (as per scripts below)
-* TODO: create config API for additional script tag attributes e.g. 'defer'
 * TODO: pass route / other data to render component
+* proper error handling and messages
+* allow custom script and css pipelines (how?)
 
 ## Done
 
@@ -16,3 +16,4 @@
 * ~~Static files~~
 * ~~Allow for paths without ending in .html~~
 * ~~async / await page render~~
+* ~~livereload https://www.npmjs.com/package/livereload~~

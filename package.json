@@ -8,22 +8,27 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "node ./vanilla/build.js",
-    "dev": "serve ./dist"
+    "build": "node ./vanilla build",
+    "dev": "node ./vanilla dev"
   },
   "dependencies": {
     "autoprefixer": "^8.4.1",
+    "chokidar": "2.0.3",
+    "colors": "1.2.3",
     "deepmerge": "^2.1.0",
     "html-minifier": "^3.5.15",
+    "ip": "1.1.5",
+    "livereload": "0.7.0",
     "mkdirp-promise": "^5.0.1",
     "ncp": "^2.0.0",
     "postcss": "^6.0.22",
-    "rmfr": "^2.0.0"
+    "pretty": "2.0.0",
+    "rmfr": "^2.0.0",
+    "serve": "6.5.6"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "babel-preset-env": "^1.6.1",
-    "eslint": "^4.19.1",
-    "serve": "^6.5.6"
+    "eslint": "^4.19.1"
   }
 }

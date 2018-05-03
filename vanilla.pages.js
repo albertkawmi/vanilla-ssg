@@ -1,7 +1,7 @@
 module.exports = {
   common: {
     cssFiles: ['styles/reset.css'],
-    scriptFiles: [{ path: 'scripts/main.js', inline: true }],
+    scriptFiles: ['scripts/main.js'],
     title: 'A default title',
     head: // html
       `
@@ -24,7 +24,6 @@ module.exports = {
 
   '/about': {
     title: 'About',
-    scriptFiles: [{ path: 'js/utils.js', inline: false }],
     body: 'pages/about',
     head: // html
       `

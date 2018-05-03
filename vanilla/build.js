@@ -1,4 +1,6 @@
 const { minify } = require('html-minifier')
+const ip = require('ip')
+const pretty = require('pretty')
 const config = require('./parseConfig')
 const renderPage = require('./renderPage')
 
@@ -8,10 +10,7 @@ const {
   writeFileToPath
 } = require('./fileSystem')
 
-
-async function renderPages() {
-  const environment = process.env.NODE_ENV || 'production'
-
+async function build({ env }) {
   // Create ./dist folder
   const distDir = `${process.cwd()}/dist`
   await clearDirectory(distDir)
@@ -24,9 +23,10 @@ async function renderPages() {
   const allPages = Object.entries(config.pages)
     .map(async ([pagePath, pageConfig]) => {
       const page = await renderPage(pageConfig)
-      const renderedPage = (environment === 'production')
+
+      const renderedPage = (env === 'production')
         ? minify(page, config.minify)
-        : page
+        : pretty(withLiveReload(page), { ocd: true })
 
       const trimmedPath = pagePath.replace(/^\/|\/$/g, '')
       const [end] = trimmedPath.split('/').reverse()
@@ -40,7 +40,23 @@ async function renderPages() {
   await Promise.all(allPages)
 
   /* eslint-disable no-console */
-  console.log('\n👍  Build complete!\n')
+  console.log(`
+    👍  Build complete!
+    ⏱  ${new Date()}
+  `)
+
+  return Promise.resolve()
 }
 
-renderPages()
+module.exports = build
+
+// TODO: parameterise livereload port
+const liveReloadScript = (port = 35729) => // html
+  `
+  <script src="http://${ip.address()}:${port}/livereload.js?snipver=1"></script>
+  `
+
+const withLiveReload = page => page.replace(
+  '</body>',
+  `${liveReloadScript()}</body>`
+)

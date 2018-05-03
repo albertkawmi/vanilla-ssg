@@ -33,8 +33,9 @@ async function renderPage ({
 // TODO: add inline config option for CSS (as per scripts below)
 const renderStyleTags = async (cssFiles) => {
   const processCssFiles = cssFiles.map(async (path) => {
-    const css = await readFile(`${process.cwd()}/${path}`, { encoding: 'utf8' })
-    return `<style>${await postCss(css)}</style>`
+    const fullPath = `${process.cwd()}/${path}`
+    const css = await readFile(fullPath, { encoding: 'utf8' })
+    return `<style>${await postCss(css, fullPath)}</style>`
   })
 
   const styleTags = await Promise.all(processCssFiles)
@@ -43,13 +44,9 @@ const renderStyleTags = async (cssFiles) => {
 }
 
 const renderScriptTags = async (scriptPaths = []) => {
-  const readScriptFiles = scriptPaths.map(async ({ path, inline }) => {
-    if (inline) {
-      const script = await readFile(`${process.cwd()}/${path}`)
-      return `<script type="text/javascript">${script}</script>`
-    }
-    // TODO: create config API for additional script tag attributes e.g. 'defer'
-    return `<script type="text/javascript" src="${path}"></script>`
+  const readScriptFiles = scriptPaths.map(async (path) => {
+    const script = await readFile(`${process.cwd()}/${path}`)
+    return `<script type="text/javascript">${script}</script>`
   })
 
   const scriptTags = await Promise.all(readScriptFiles)
