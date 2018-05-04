@@ -7,6 +7,7 @@ async function renderPage ({
   scriptFiles = [],
   cssFiles = [],
   body,
+  buildConfig,
 }) {
   if (!body) {
     throw new Error('Unable to render page: no body component specified.')
@@ -19,7 +20,7 @@ async function renderPage ({
     <head>
       <title>${title}</title>
       ${head}
-      ${await renderStyleTags(cssFiles)}
+      ${await renderStyleTags(cssFiles, buildConfig.autoprefixer)}
     </head>
     <body>
       ${await renderBody(body)}
@@ -31,11 +32,13 @@ async function renderPage ({
 }
 
 // TODO: add inline config option for CSS (as per scripts below)
-const renderStyleTags = async (cssFiles) => {
+const renderStyleTags = async (cssFiles, autoprefixerConfig) => {
+  const { enabled, options } = autoprefixerConfig
+  if (!enabled) return ''
   const processCssFiles = cssFiles.map(async (path) => {
     const fullPath = `${process.cwd()}/${path}`
     const css = await readFile(fullPath, { encoding: 'utf8' })
-    return `<style>${await postCss(css, fullPath)}</style>`
+    return `<style>${await postCss(css, fullPath, options)}</style>`
   })
 
   const styleTags = await Promise.all(processCssFiles)

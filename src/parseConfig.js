@@ -1,20 +1,26 @@
 const deepmerge = require('deepmerge')
 
 const cwd = process.cwd()
-const optionsConfig = require(`${cwd}/vanilla.options`)
 const pagesConfig = require(`${cwd}/vanilla.pages`)
+const defaultOptions = require('./defaultOptions')
 
-const defaultOptions = {}
-
+const optionsConfig = getOptionsConfig()
 const { common, ...pages } = pagesConfig
 
 const config = {
-  ...defaultOptions,
-  ...(optionsConfig ),
+  options: deepmerge(defaultOptions, optionsConfig),
   pages: mergePageConfig(common, pages)
 }
 
 module.exports = config
+
+function getOptionsConfig() {
+  try {
+    return require(`${cwd}/vanilla.options`)
+  } catch (e) {
+    return {}
+  }
+}
 
 function mergePageConfig(defaultPageConfig, allPages) {
   return Object.entries(allPages)

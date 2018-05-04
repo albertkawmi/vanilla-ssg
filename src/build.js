@@ -1,7 +1,7 @@
-const { minify } = require('html-minifier')
+const { minify: minifyHtml } = require('html-minifier')
 const ip = require('ip')
-const pretty = require('pretty')
-const config = require('./parseConfig')
+const prettyHtml = require('pretty')
+const { pages: pagesConfig, options: buildConfig } = require('./parseConfig')
 const renderPage = require('./renderPage')
 
 const {
@@ -16,47 +16,82 @@ async function build({ env }) {
   await clearDirectory(distDir)
 
   // Copy static files
-  const source = config.staticFiles
+  const source = buildConfig.staticFiles
   await copyDir(source, distDir)
 
   // Render page HTML files
-  const allPages = Object.entries(config.pages)
+  const allPages = Object.entries(pagesConfig)
     .map(async ([pagePath, pageConfig]) => {
-      const page = await renderPage(pageConfig)
+      const page = await renderPage({ ...pageConfig, buildConfig })
+      const builtPage = buildProcess({ page, buildConfig, env })
+      const writePath = getWritePath(pagePath)
 
-      const renderedPage = (env === 'production')
-        ? minify(page, config.minify)
-        : pretty(withLiveReload(page), { ocd: true })
-
-      const trimmedPath = pagePath.replace(/^\/|\/$/g, '')
-      const [end] = trimmedPath.split('/').reverse()
-      const isFile = /\.[a-zA-Z0-9]+$/.test(end)
-
-      const writePath = isFile ? trimmedPath : `${trimmedPath}/index.html`
-
-      return await writeFileToPath(`${distDir}/${writePath}`, renderedPage)
+      return await writeFileToPath(`${distDir}/${writePath}`, builtPage)
     })
 
   await Promise.all(allPages)
 
   /* eslint-disable no-console */
   console.log(`
-    👍  Build complete!
+    👍  Build complete
     ⏱  ${new Date()}
   `)
 
   return Promise.resolve()
 }
 
+// TODO: refactor this to a functional pipeline
+function buildProcess({ page, buildConfig, env }) {
+  const { minify, pretty, livereload } = buildConfig
+
+  const isProd = env === 'production'
+  const shouldMinifyHtml = isProd && minify.enabled
+  const shouldPrettifyHtml = !isProd && pretty.enabled
+  const shouldLivereload = !isProd && livereload.enabled
+
+  let builtPage = page
+
+  if (shouldLivereload) {
+    builtPage = withLivereload(builtPage, livereload.options)
+  }
+
+  if (shouldMinifyHtml) {
+    builtPage = minifyHtml(builtPage, minify.options)
+  }
+
+  if (shouldPrettifyHtml) {
+    builtPage = prettyHtml(builtPage, pretty.options)
+  }
+
+  return builtPage
+}
+
+function getWritePath(pagePath) {
+  const trimmedPath = pagePath.replace(/^\/|\/$/g, '')
+  const end = trimmedPath.split('/').pop()
+  const isFile = /\.[a-zA-Z0-9]+$/.test(end)
+
+  const writePath = isFile
+    ? trimmedPath
+    : [trimmedPath, 'index.html'].join('/')
+
+  return writePath
+}
+
+function withLivereload(page, options = {}) {
+  const host = ip.address() || 'localhost'
+  const port = options.port || 35729
+  const scriptSrc = `http://${host}:${port}/livereload.js?snipver=1`
+
+  const scriptTag = // html
+  `
+  <script src="${scriptSrc}"></script>
+  `
+
+  return page.replace(
+    '</body>',
+    `${scriptTag}</body>`
+  )
+}
+
 module.exports = build
-
-// TODO: parameterise livereload port
-const liveReloadScript = (port = 35729) => // html
-  `
-  <script src="http://${ip.address()}:${port}/livereload.js?snipver=1"></script>
-  `
-
-const withLiveReload = page => page.replace(
-  '</body>',
-  `${liveReloadScript()}</body>`
-)
