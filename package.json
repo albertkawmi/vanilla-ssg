@@ -7,6 +7,9 @@
   "author": "Albert Kawmi",
   "license": "MIT",
   "private": true,
+  "bin": {
+    "vanilla-ssg": "./src/index.js"
+  },
   "scripts": {
     "build": "node ./vanilla build",
     "dev": "node ./vanilla dev"
