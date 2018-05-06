@@ -31,14 +31,15 @@ async function renderPage ({
   return rendered
 }
 
-// TODO: add inline config option for CSS (as per scripts below)
+// TODO: rethink this to add a CSS pipeline
 const renderStyleTags = async (cssFiles, autoprefixerConfig) => {
-  const { enabled, options } = autoprefixerConfig
-  if (!enabled) return ''
   const processCssFiles = cssFiles.map(async (path) => {
     const fullPath = `${process.cwd()}/${path}`
     const css = await readFile(fullPath, { encoding: 'utf8' })
-    return `<style>${await postCss(css, fullPath, options)}</style>`
+    const renderedCss = autoprefixerConfig.enabled
+      ? await postCss(css, fullPath, autoprefixerConfig.options)
+      : css
+    return `<style>${renderedCss}</style>`
   })
 
   const styleTags = await Promise.all(processCssFiles)
