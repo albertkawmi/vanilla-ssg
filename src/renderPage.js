@@ -58,8 +58,10 @@ const renderScriptTags = async (scriptPaths = []) => {
 }
 
 // TODO: pass route / other data to render component
-const renderBody = pathToComponent => {
-  const render = require(`${process.cwd()}/${pathToComponent}`)
+const renderBody = async (pathToComponent) => {
+  const fullPath = `${process.cwd()}/${pathToComponent}`
+  delete require.cache[require.resolve(fullPath)]
+  const render = require(fullPath)
   return Promise.resolve(render())
 }
 
