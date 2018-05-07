@@ -1,3 +1,4 @@
+const clearRequire = require('clear-require')
 const { readFile } = require('./fileSystem')
 const postCss = require('./postCss')
 
@@ -61,7 +62,7 @@ const renderScriptTags = async (scriptPaths = []) => {
 // TODO: pass route / other data to render component
 const renderBody = async (pathToComponent) => {
   const fullPath = `${process.cwd()}/${pathToComponent}`
-  delete require.cache[require.resolve(fullPath)]
+  clearRequire.all()
   const render = require(fullPath)
   return Promise.resolve(render())
 }

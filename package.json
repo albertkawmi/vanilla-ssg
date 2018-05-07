@@ -17,6 +17,7 @@
   "dependencies": {
     "autoprefixer": "^8.4.1",
     "chokidar": "2.0.3",
+    "clear-require": "2.0.0",
     "colors": "1.2.3",
     "deepmerge": "^2.1.0",
     "html-minifier": "^3.5.15",
